@@ -4,10 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MyArrayListTest {
     private static final int INITIAL_CAPACITY = 10;
+    private static final int CUSTOM_CAPACITY = 5;
     private static final int NEGATIVE_INDEX = -1;
     private static final int VALUE_ZERO = 0;
     private static final int VALUE_ONE = 1;
@@ -15,11 +18,73 @@ class MyArrayListTest {
     private static final int VALUE_THREE = 3;
 
 
-    private MyArrayList<Integer> list;
+    private List<Integer> list;
 
     @BeforeEach
     void setUp() {
         list = new MyArrayList<>();
+    }
+
+    @DisplayName("Constructing an empty list with default constructor")
+    @Test
+    void testDefaultConstructor() {
+        assertEquals(VALUE_ZERO, list.size(), "Size should be 0 for empty list");
+    }
+
+    @DisplayName("Constructing a list with custom capacity")
+    @Test
+    void testCapacityConstructor() {
+        MyArrayList<Integer> customList = new MyArrayList<>(CUSTOM_CAPACITY);
+        assertEquals(VALUE_ZERO, customList.size(), "Size should be 0 after construction with custom capacity");
+        for (int i = 0; i < CUSTOM_CAPACITY; i++) {
+            customList.add(i);
+        }
+        assertEquals(CUSTOM_CAPACITY, customList.size(), "List should accept elements up to custom capacity");
+    }
+
+    @DisplayName("Constructing a list with negative capacity throws exception")
+    @Test
+    void testNegativeCapacityConstructor() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new MyArrayList<>(NEGATIVE_INDEX),
+                "Constructing with negative capacity should throw IllegalArgumentException");
+    }
+
+    @DisplayName("Constructing a list from a collection")
+    @Test
+    void testCollectionConstructor() {
+        MyArrayList<Integer> listFromCollection = new MyArrayList<>(Arrays.asList(VALUE_ONE, VALUE_TWO, VALUE_THREE));
+        assertEquals(VALUE_THREE, listFromCollection.size(), "Size should be 3 after construction from collection");
+        assertEquals(VALUE_ONE, listFromCollection.get(0), "First element should be 1");
+        assertEquals(VALUE_TWO, listFromCollection.get(1), "Second element should be 2");
+        assertEquals(VALUE_THREE, listFromCollection.get(2), "Third element should be 3");
+    }
+
+    @DisplayName("Constructing a list from a null collection throws exception")
+    @Test
+    void testNullCollectionConstructor() {
+        assertThrows(NullPointerException.class,
+                () -> new MyArrayList<>((java.util.Collection<Integer>) null),
+                "Constructing from null collection should throw NullPointerException");
+    }
+
+    @DisplayName("Constructing a list from an array")
+    @Test
+    void testArrayConstructor() {
+        Integer[] array = {VALUE_ONE, VALUE_TWO, VALUE_THREE};
+        MyArrayList<Integer> listFromArray = new MyArrayList<>(array);
+        assertEquals(VALUE_THREE, listFromArray.size(), "Size should be 3 after construction from array");
+        assertEquals(VALUE_ONE, listFromArray.get(0), "First element should be 1");
+        assertEquals(VALUE_TWO, listFromArray.get(1), "Second element should be 2");
+        assertEquals(VALUE_THREE, listFromArray.get(2), "Third element should be 3");
+    }
+
+    @DisplayName("Constructing a list from a null array throws exception")
+    @Test
+    void testNullArrayConstructor() {
+        assertThrows(NullPointerException.class,
+                () -> new MyArrayList<>((Integer[]) null),
+                "Constructing from null array should throw NullPointerException");
     }
 
     @DisplayName("Adding an element to the end of the list")

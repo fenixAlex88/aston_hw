@@ -1,6 +1,7 @@
 package by.alex.list;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,46 @@ public class MyArrayList<T> implements List<T> {
     }
 
     /**
+     * Constructs an empty list with the specified initial capacity.
+     *
+     * @param capacity the initial capacity of the list
+     * @throws IllegalArgumentException if the specified capacity is negative
+     */
+    public MyArrayList(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity cannot be negative: " + capacity);
+        }
+        elements = new Object[capacity];
+        size = 0;
+    }
+
+    /**
+     * Constructs a list containing the elements of the specified collection,
+     * in the order they are returned by the collection's iterator.
+     *
+     * @param c the collection whose elements are to be placed into this list
+     * @throws NullPointerException if the specified collection is null
+     */
+    public MyArrayList(Collection<? extends T> c) {
+        Objects.requireNonNull(c, "Collection must not be null");
+        size = c.size();
+        elements = c.toArray();
+    }
+
+    /**
+     * Constructs a list containing the elements of the specified array,
+     * in the same order as they appear in the array.
+     *
+     * @param array the array whose elements are to be placed into this list
+     * @throws NullPointerException if the specified array is null
+     */
+    public MyArrayList(T[] array) {
+        Objects.requireNonNull(array, "Array must not be null");
+        size = array.length;
+        elements = Arrays.copyOf(array, size);
+    }
+
+    /**
      * Appends the specified element to the end of this list.
      *
      * @param value the element to be appended to this list
@@ -40,7 +81,7 @@ public class MyArrayList<T> implements List<T> {
      *
      * @param value the element to be inserted
      * @param index the index at which the element should be inserted
-     * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt; size())
+     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index > size())
      */
     @Override
     public void add(T value, int index) {
@@ -56,7 +97,7 @@ public class MyArrayList<T> implements List<T> {
      *
      * @param index the index of the element to return
      * @return the element at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;= size())
+     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size())
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -99,6 +140,7 @@ public class MyArrayList<T> implements List<T> {
      * @throws UnsupportedOperationException if the elements do not implement {@link Comparable}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void sort() {
         if (size > 0 && !(elements[0] instanceof Comparable)) {
             throw new UnsupportedOperationException("Elements must implement Comparable for sorting");
@@ -106,7 +148,6 @@ public class MyArrayList<T> implements List<T> {
         if (size <= 1) {
             return;
         }
-        //noinspection unchecked
         Arrays.sort(elements, 0, size, (a, b) -> ((Comparable<T>) a).compareTo((T) b));
     }
 
@@ -137,7 +178,7 @@ public class MyArrayList<T> implements List<T> {
      * @param allowEnd if true, allows the index to equal the size (for insertion);
      *                 if false, requires the index to be less than the size (for access)
      * @throws IndexOutOfBoundsException if the index is out of range
-     *         (index &lt; 0 || (allowEnd ? index &gt; size : index &gt;= size))
+     *         (index < 0 || (allowEnd ? index > size : index >= size))
      */
     private void validateIndex(int index, boolean allowEnd) {
         boolean isInvalid = index < 0 || (allowEnd ? index > size : index >= size);
