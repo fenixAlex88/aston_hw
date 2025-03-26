@@ -6,7 +6,7 @@ import by.alex.list.MyArrayList;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Testing MyArrayList:");
-        MyArrayList<Integer> arrayList = new MyArrayList<>();
+        List<Integer> arrayList = new MyArrayList<>();
         arrayList.add(5);
         arrayList.add(5);
         arrayList.add(5);
